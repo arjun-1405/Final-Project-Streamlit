@@ -261,10 +261,10 @@ def main():
 
     colA, colB = st.sidebar.columns(2)
     with colA:
-        if st.button("↩️ Reset to healthy", use_container_width=True):
+        if st.button("↩️ Reset to healthy", width="stretch"):
             sv["temperature"], sv["vibration"], sv["pressure"], sv["rpm"] = cfg["temp"], cfg["vib"], cfg["press"], cfg["rpm"]
     with colB:
-        if st.button("🎲 Randomize fault", use_container_width=True):
+        if st.button("🎲 Randomize fault", width="stretch"):
             rng = np.random.default_rng()
             sv["temperature"] = cfg["temp"] + rng.uniform(5, 40)
             sv["vibration"] = cfg["vib"] + rng.uniform(0.5, 5)
@@ -311,22 +311,22 @@ def main():
     g1, g2, g3, g4 = st.columns(4)
     with g1:
         st.plotly_chart(gauge_chart(health["health_score"], "Health Score (%)", 100, RISK_COLORS[health["risk"]]),
-                         use_container_width=True)
+                         width="stretch")
     with g2:
         st.plotly_chart(gauge_chart(sv["temperature"], "Temperature (°C)", SENSOR_LIMITS["temperature"]["max"],
-                                     STATUS_COLORS[status["temperature"]]), use_container_width=True)
+                                     STATUS_COLORS[status["temperature"]]), width="stretch")
     with g3:
         st.plotly_chart(gauge_chart(sv["vibration"], "Vibration (mm/s)", SENSOR_LIMITS["vibration"]["max"],
-                                     STATUS_COLORS[status["vibration"]]), use_container_width=True)
+                                     STATUS_COLORS[status["vibration"]]), width="stretch")
     with g4:
         if cfg["press"] > 0:
             st.plotly_chart(gauge_chart(sv["pressure"], "Pressure (bar)", SENSOR_LIMITS["pressure"]["max"],
-                                         STATUS_COLORS[status["pressure"]]), use_container_width=True)
+                                         STATUS_COLORS[status["pressure"]]), width="stretch")
         else:
-            st.plotly_chart(gauge_chart(sv["rpm"], "RPM", cfg["rpm_range"][1] * 1.3, "#3498db"), use_container_width=True)
+            st.plotly_chart(gauge_chart(sv["rpm"], "RPM", cfg["rpm_range"][1] * 1.3, "#3498db"), width="stretch")
 
     # ---------------- Stress breakdown ----------------
-    st.plotly_chart(stress_bar_chart(health), use_container_width=True)
+    st.plotly_chart(stress_bar_chart(health), width="stretch")
 
     # ---------------- Alerts ----------------
     st.markdown("#### 🚨 Live Alerts")
@@ -357,13 +357,13 @@ def main():
         with tcol1:
             st.plotly_chart(trend_chart(hist, "temperature", "Temperature", "°C",
                                          SENSOR_LIMITS["temperature"]["warn"], SENSOR_LIMITS["temperature"]["crit"]),
-                             use_container_width=True)
-            st.plotly_chart(health_trend_chart(hist), use_container_width=True)
+                             width="stretch")
+            st.plotly_chart(health_trend_chart(hist), width="stretch")
         with tcol2:
             st.plotly_chart(trend_chart(hist, "vibration", "Vibration", "mm/s",
                                          SENSOR_LIMITS["vibration"]["warn"], SENSOR_LIMITS["vibration"]["crit"]),
-                             use_container_width=True)
-            st.plotly_chart(trend_chart(hist, "rpm", "RPM", "rpm"), use_container_width=True)
+                             width="stretch")
+            st.plotly_chart(trend_chart(hist, "rpm", "RPM", "rpm"), width="stretch")
 
     # ---------------- Fleet comparison snapshot ----------------
     with st.expander("🏭 Compare all machines at their current slider settings"):
@@ -374,15 +374,15 @@ def main():
             rows.append({"Machine": mid, "Type": mcfg["type"], "Health %": mh["health_score"],
                          "Risk": mh["risk"], "RUL (h)": mh["rul_hours"]})
         fleet_df = pd.DataFrame(rows)
-        st.dataframe(fleet_df, use_container_width=True, hide_index=True)
+        st.dataframe(fleet_df, width="stretch", hide_index=True)
         fig = px.bar(fleet_df, x="Machine", y="Health %", color="Risk", color_discrete_map=RISK_COLORS)
         fig.update_layout(height=280, margin=dict(l=10, r=10, t=30, b=10))
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     # ---------------- Maintenance log ----------------
     with st.expander("🧾 Maintenance log"):
         if st.session_state.maintenance_log:
-            st.dataframe(pd.DataFrame(st.session_state.maintenance_log), use_container_width=True, hide_index=True)
+            st.dataframe(pd.DataFrame(st.session_state.maintenance_log), width="stretch", hide_index=True)
         else:
             st.info("No maintenance actions logged yet.")
 
@@ -391,7 +391,7 @@ def main():
         if hist.empty:
             st.info("No history recorded yet.")
         else:
-            st.dataframe(hist.sort_values("timestamp", ascending=False), use_container_width=True, hide_index=True)
+            st.dataframe(hist.sort_values("timestamp", ascending=False), width="stretch", hide_index=True)
 
 
 if __name__ == "__main__":
